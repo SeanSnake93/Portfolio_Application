@@ -16,7 +16,7 @@ class Users(db.Model):
     password = db.Column(db.String(500), nullable=False, unique=True) # Encrypted
     record = db.Column(db.Integer, db.ForeignKey('Records.id'), nullable=False) # Links to Users details
     tag_links = db.relationship('Tags_Links', backref='tags', lazy=True) # Tags table holds all referanced 'tag' data and target data i.e. Images, Web Links and Display content
-
+    
     def __repr__(self):
         return ''.join([
             'User ID: ', str(self.id), '\r\n',
@@ -63,7 +63,7 @@ class Entities(db.Model):
     date_month = db.Column(db.Integer, nullable=False)
     date_year = db.Column(db.Integer, nullable=False)
     date_time = db.Column(db.Integer, nullable=False)
-    tags_links = db.relationship('Tags_Links', backref='tags', lazy=True) # Any Tags linked to this entry i.e. Images, Web Links and Display content
+    tag_links = db.relationship('Tag_Links', backref='tags', lazy=True) # Any Tags linked to this entry i.e. Images, Web Links and Display content
 
     def __repr__(self):
         return ''.join([
