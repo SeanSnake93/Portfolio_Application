@@ -2,7 +2,7 @@
 
 ## Introduction
 
-The goal of this application is to make a functioning site capable of filtering out Database entries to automate a user experiance. With the expectation that the site will be used to host our personal portfolio's for future employment amongst others. The site will be designed with the idea of maintaing good practice throughout, work with the group to assogn roles while using languages such as Bash, CSS, Flask, HTML, Python, Shell, SQL, Yaml.
+The goal of this application is to make a functioning site capable of filtering out Database entries to automate a user experiance. With the expectation that the site will be used to host our personal portfolio's for future employment amongst others. The site will be designed with the idea of maintaing good practice throughout, work with the group to assogn roles while using languages such as Bash, CSS, Flask, HTML, Python, Shell, SQL, YAML.
 
 ## Contents
 * Introduction
