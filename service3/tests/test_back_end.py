@@ -63,10 +63,87 @@ class TestBase(TestCase):
             sub_year = 2020,
             sub_time = 00:00
             )
+        entity1 = Entities(
+            title="Employee",
+            type="System",
+            publisher="User",
+            date_day = 5,
+            date_month = 1,
+            date_year = 2000,
+            date_time = 00:00
+            )
+        block11 = Blocks(
+            parent_id="",
+            has_child=False,
+            tag_id=1
+            entity_id=1
+            position=1
+        )
+        block12 = Blocks(
+            parent_id="",
+            has_child=False,
+            tag_id=2,
+            entity_id=1,
+            position=2
+        )
+        entity2 = Entities(
+            title="Employee",
+            type="System",
+            publisher="User",
+            date_day = 5,
+            date_month = 1,
+            date_year = 2000,
+            date_time = 00:00
+            )
+        block21 = Blocks(
+            parent_id="",
+            has_child=False,
+            tag_id=3,
+            entity_id=2,
+            position=1
+        )
+        tag1 = Tags(
+            tag="text",
+            target="This is to be propper content at some point."
+        )
+        tag2 = Tags(
+            tag="text",
+            target="But as a team we will try and try again."
+        )
+        tag3 = Tags(
+            tag="text",
+            target="Untill the day it is finaly finished."
+        )
+        tag_link1 = Tag_Links(
+            referance_user="",
+            referance_entry=1,
+            tag_id=1
+        )
+        tag_link2 = Tag_Links(
+            referance_user="",
+            referance_entry=2,
+            tag_id=2
+        )
+        tag_link3 = Tag_Links(
+            referance_user="",
+            referance_entry=2,
+            tag_id=3
+        )
         db.session.add(admin_details)
         db.session.add(admin)
         db.session.add(employee_details)
         db.session.add(employee)
+        db.session.add(entity1)
+        db.session.add(block11)
+        db.session.add(block12)
+        db.session.add(entity2)
+        db.session.add(block21)
+        db.session.add(tag1)
+        db.session.add(tag2)
+        db.session.add(tag3)
+        db.session.add(tag_link1)
+        db.session.add(tag_link2)
+        db.session.add(tag_link3)
         db.session.commit()
 
     def tearDown(self):
