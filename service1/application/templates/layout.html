@@ -46,7 +46,7 @@
         {% if current_user.is_authenticated %}  
         <div>
             <ul>
-                {% for entry in entries %}
+                {% for Entries in Datapack %}
                     <li><a href="{{ url_for('portfolio/{{ current_user }}/{{ entry.title }}') }}">{{ entry.title }}</a></li>
                 {% endfor %}
             </ul>

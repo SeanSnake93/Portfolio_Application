@@ -2,37 +2,47 @@ import requests, json
 from flask import render_template, request, redirect, url_for, jsonify
 from application import app, db, bcrypt
 from application.models import Users, Records, Entities, Blocks, Tag_Links, Tags
-from application.forms import {{ Inport, Forms, Here }}
+from application.forms import EntityForm, Con1Form, Con2Form, Con3Form, TagsForm, UserLoginForm, UserRegisterForm, UserUpdateForm
 from flask_login import login_user, current_user, logout_user, login_required
 
-# source = {Collection:{EntityID{field:value}}, Tables:{table:{field:value}}, User_Tags:{TagID:{field:value}}, Entry_Tags:{TagID:{field:value}}, Tags:{TagID:{field:value}}}
-# flags = [Collection, User_Tags, Entry_Tags, Table]
-
 def aquire_datapack(source, flags):
+    # source = {Collection:{EntityID{field:value}}, Tables:{table:{field:value}}, User_Tags:{TagID:{field:value}}, Entry_Tags:{TagID:{field:value}}, Tags:{TagID:{field:value}}}
+    # flags = [Collection, User_Data, User_Tags, Entry_Tags, Table]
     packet = {}
-    for flag in flags:
+    for flag in flags: # All of the functions use JSON formatting so data can be delivered in larger amounts. 
 
-        if "Collection" in flag:
-            flash_beta = Entities.query.filter_by(publisher=int(source[Tables][Users][id])).all()
-            for entry in flash_beta:
+        if "Collection" in flag: # This is used to aquire to collection of entries the LOGGED IN user has made.
+            flash_alpha = Entities.query.filter_by(publisher=int(source[Tables][Users][id])).all()
+            for entry in flash_alpha:
                 wrap += {str(entry.id):{"title":entry.title, "type":entry.type, "publisher":entry.publisher, "day":entry.date_day, "month":entry.date_month, "year":entry.date_year, "time":entry.date_time}}
             packet += {"Entries":wrap}
 
-        elif "User_Tags" in flag:
+        elif "User_Data" in flag: # This is to be used to grab any data related to the LOGGED IN user.
+            flash_alpha = Users.query.filter_by(id=int(source[Tables][Users][id])).first()
+            flash_beta = Records.query.filter_by(id=flash_alpha.record).first()
+            wrap = {str(flash_alpha.id):{"User_name":flash_alpha.User_name , "Email":flash_alpha.email, "first_name":flash_beta.first_name, "middle_name":flash_beta.middle_name, "last_name":flash_beta.last_name, "sex":flash_beta.sex, "dob_day":str(flash_beta.dob_day), "dob_month":str(flash_beta.dob_month), "dob_year":str(flash_beta.dob_year), "sub_day":str(flash_beta.sub_day), "sub_month":str(flash_beta.sub_month), "sub_year":str(flash_beta.sub_year), "sub_time":str(flash_beta.sub_time)}}
+            packet += {"User_Data":wrap}
+
+        elif "User_Tags" in flag: # This is to be used to grab any Tags stored that the LOGGED IN user has.
             flash_alpha = Tag_Links.query.filter_by(referance_user=int(source[Tables][Users][id])).all()
             for entry in flash_alpha:
                 flash_beta = Tags.query.filter_by(id=entry.tag_id).first()
                 wrap += {str(entry.id):{"tag":flash_beta.tag, "target":flash_beta.target}}
             packet += {"User_Tags":wrap}
 
-        elif "Entry_Tags" in flag:
+        elif "Entry_Tags" in flag: # This is to be used to grab any Tags related to the current Entry.
             flash_alpha = Tag_Links.query.filter_by(referance_user=int(source[Tables][Entries][id])).all()
-            for entry in flash_beta:
+            for entry in flash_alpha:
                 flash_beta = Tags.query.filter_by(id=entry.tag_id).first()
                 wrap += {str(entry.id):{"tag":flash_beta.tag, "target":flash_beta.target}}
             packet += {"User_Tags":wrap}
 
-        elif "Table" in flag:
+        elif "Tags" in flag: # Used to aquire Tags related to content "Blocks".
+            flash_alpha = Tag.query.filter_by(id=int(source[Tables][Blocks][tag_id])).first()
+            wrap = {str(flash_alpha.id):{"tag":flash_alpha.tag, "target":flash_alpha.target}}
+            packet += {"Tags":wrap}
+
+        elif "Table" in flag: # This is uded to grab data from an entire Table.
             for table in source[Table]:
                 flash_alpha = table.query.all()
                 for entry in flash_alpha:
@@ -59,22 +69,22 @@ def aquire_datapack(source, flags):
 @app.route('/')
 @app.route('/home')
 def home():
-    if current_user.is_authenticated:
-        source = {"Tables":{"Users":{"user_name":str(current_user.id)}}}
+    if current_user.is_authenticated: # If a user is currently LOGGED IN the system is to request all of the current users created Entities
+        source = {"Tables":{"Users":{"id":str(current_user.id)}}} # This is searched via the users ID ~ refure to aquire_datapack function
         flag = ["Collection"]
-        delivery = aquire_datapack(source, flag)
-    return render_template('home.html', datapacket = delivery, title = 'Index')
+        parcel = aquire_datapack(source, flag)
+    return render_template('home.html', datapacket = parcel, title = 'Index')
 
 @app.route('/browse')
 def home():
-    source = {"Tables":"Entries"}
+    source = {"Tables":"Entries"} # This is to grab all entries from the "Entries" Table and list them on the Browse page.
     flag = ["Table"]
-    delivery = aquire_datapack(source, flag)
-    if current_user.is_authenticated:
+    parcel = aquire_datapack(source, flag)
+    if current_user.is_authenticated: # Refure to lines 73 and 74
         source = {"Tables":{"Users":{"user_name":str(current_user.id)}}}
         flag = ["Collection"]
-        delivery += aquire_datapack(source, flag)
-    return render_template('browse.html', datapacket = delivery, title = 'Entries')
+        parcel += aquire_datapack(source, flag)
+    return render_template('browse.html', datapacket = parcel, title = 'Entries')
 
 # --- Roop Pages Routes -- Finish --- <<<
 
@@ -82,25 +92,26 @@ def home():
 
 @app.route('/portfolio/<publisher>/<title>', methods=['GET','POST'])
 def user(publisher, title):
-    delivery = aquire_datapack(current_user.user_name, "standard")
+    parcel = aquire_datapack(current_user.user_name, "standard")
     # this will need to be capable of displaying Blocks in order and enable child entities.
-    return render_template('entity.html', datapacket = delivery, title = delivery[Table][Entities][entity_title])
+    return render_template('entity.html', datapacket = parcel, title = delivery[Table][Entities][entity_title])
 
 @app.route('/portfolio/<publisher>/<title>/edit', methods=['GET','POST'])
 def user(publisher, title):
-    delivery = aquire_datapack(current_user.user_name, "standard")
+    parcel = aquire_datapack(current_user.user_name, "standard")
     # will need to list all blocks inside this entry and any other details
-    return render_template('entity.html', datapacket = delivery, title = 'Edit ~ ' + delivery[Table][Entities][entity_title])
+    return render_template('entity.html', datapacket = parcel, title = 'Edit ~ ' + delivery[Table][Entities][entity_title])
 
 # --- Entries Routes -- Finish --- <<<
 
 # --- User Routes --- Start --- >>>
 
 @app.route('/<user_name>', methods=['GET','POST'])
-def user():
-    delivery = aquire_datapack(current_user.user_name, "standard, user")
-    # will need to list all owned tags and entries
-    return render_template('user.html', datapacket = delivery, title = 'Users Page')
+def user(user_name):
+    source = {"Tables":{"Users":{"id":str(current_user.id)}}}
+    flag = ["Collection", "User_Data", "User_Tags"]
+    parcel = aquire_datapack(source, flag)
+    return render_template('user.html', datapacket = parcel, title = 'Users Page')
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -159,7 +170,7 @@ def login():
 
 @app.route('/<user_name>/edit', methods=['GET', 'POST'])
 @login_required
-def user_edit():
+def user_edit(user_name):
     """This will allow the user to edit their details"""
     form = UpdateAccountForm()
     if form.validate_on_submit():
@@ -172,8 +183,8 @@ def user_edit():
         form.first_name =  current_user.first_name
         form.middle_name =  current_user.middle_name
         form.last_name = current_user.last_name
-    delivery = aquire_datapack()
-    return render_template('user_edit.html', datapacket = delivery, title='Account Page', form=form)
+    parcel = aquire_datapack()
+    return render_template('user_edit.html', datapacket = parcel, title='Account Page', form=form)
 
 @app.route('/logout', methods=['GET', 'POST'])
 def logout():

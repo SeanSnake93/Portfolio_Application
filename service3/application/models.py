@@ -78,7 +78,7 @@ class Blocks(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     parent_id = db.Column(db.Integer, db.ForeignKey('blocks.id'), nullable=True) # If this block is to sit inside another then the block is to referance its parent.
-    has_child = db.Column(db.Boolean, nullable=False) # This is a True of False that is to be refured to in the HTML as to display spesific fields.
+    has_child = db.Column(db.Boolian, nullable=False) # This is a True of False that is to be refured to in the HTML as to display spesific fields.
     tag_id = db.Column(db.Integer, db.ForeignKey('tags.id'), nullable=True) # The Tag_id refures to a 'tag' called Content. This is to be displayed on the page only if has_child is False
     entity_id = db.Column(db.Integer, db.ForeignKey('entities.id'), nullable=False) # What entity the block belongs to
     position = db.Column(db.Integer, nullable=False) # What possition it belongs in when filtered on the page
