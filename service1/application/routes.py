@@ -1,8 +1,8 @@
 import requests, json
 from flask import render_template, request, redirect, url_for, jsonify
-from application import app, db, bcrypt
+from application import app#, bcrypt, db
 from application.models import Users, Records, Entities, Blocks, Tag_Links, Tags
-from application.forms import {{ Inport, Forms, Here }}
+#from application.forms import {{ Inport, Forms, Here }}
 from flask_login import login_user, current_user, logout_user, login_required
 
 # --- Root Pages Routes --- Start --- >>>
@@ -17,12 +17,12 @@ def home():
 # --- Entries Routes --- Start --- >>>
 
 @app.route('/portfolio/<user_name>/<entity_title>', methods=['GET','POST'])
-def user():
+def user_entity():
     # this will need to be capable of displaying Blocks in order and enable child entities.
     return render_template('entity.html', variable = value, title = 'Users Page')
 
 @app.route('/portfolio/<user_name>/<entity_title>/edit', methods=['GET','POST'])
-def user():
+def user_entity_edit():
     # will need to list all blocks inside this entry and any other details
     return render_template('entity.html', variable = value, title = 'Users Page')
 
@@ -31,7 +31,7 @@ def user():
 # --- User Routes --- Start --- >>>
 
 @app.route('/<user_name>', methods=['GET','POST'])
-def user():
+def user(user_name):
     # will need to list all owned tags and entries
     return render_template('user.html', variable = value, title = 'Users Page')
 
@@ -39,7 +39,7 @@ def user():
 def register():
     """This function is to process the users details upon registering."""
     if current_user.is_authenticated:
-        return redirect(url_for('<user_name>'))
+        return redirect(url_for('user', user_name = current_user.user_name))
     form = RegistrationForm()
     if form.validate_on_submit():
         hash_pw=bcrypt.generate_password_hash(form.password.data)
@@ -67,14 +67,14 @@ def register():
         )
         db.session.add(user)
         db.session.commit()
-        return redirect(url_for('<user_name>'))
+        return redirect(url_for('user', user_name = current_user.user_name))
     return render_template('register.html', title='Register', form=form)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     """This is to allow the user to login"""
     if current_user.is_authenticated:
-        return redirect(url_for('<user_name>'))
+        return redirect(url_for('user', user_name = current_user.user_name))
     form = LoginForm()
     if form.validate_on_submit():
         user = Users.query.filter_by(email=form.email.data).first()
@@ -87,7 +87,7 @@ def login():
             if next_page:
                 return redirect(next_page)
             else:
-                return redirect(url_for('<user_name>'))
+                return redirect(url_for('user', user_name = current_user.user_name))
     return render_template('login.html', title='Login Page', form=form)
 
 @app.route('/<user_name>/edit', methods=['GET', 'POST'])
@@ -100,7 +100,7 @@ def user_edit():
         current_user.middle_name = form.middle_name.data
         current_user.last_name = form.last_name.data
         db.session.commit()
-        return redirect(url_for('<user_name>'))
+        return redirect(url_for('user', user_name = current_user.user_name))
     elif request.method =='GET':
         form.first_name =  current_user.first_name
         form.middle_name =  current_user.middle_name
