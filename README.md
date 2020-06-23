@@ -34,7 +34,8 @@ The goal of this application is to make a functioning site capable of filtering 
 | Sean McCann    | Project Lead        | https://github.com/SeanSnake93 | Link Pending   |
 
 ## Planning
-### Trello Board
+### Trello Board 
+![trello](https://user-images.githubusercontent.com/64256460/85457908-6e652400-b598-11ea-888b-5045238a05cc.png)
 
 
 
