@@ -33,7 +33,7 @@ def user_entity_edit():
 @app.route('/<user_name>', methods=['GET','POST'])
 def user(user_name):
     # will need to list all owned tags and entries
-    return render_template('user.html', variable = value, title = 'Users Page')
+    return render_template('user.html', title = 'Users Page')
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
