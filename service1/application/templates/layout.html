@@ -1,0 +1,76 @@
+<html>
+	<!------------------------------------------------------------------------------------------------------->
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Crosswave - {{ title }}</title>
+        <!--link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}"-->
+
+        <!--Enter into the css when happy with the changes-->
+
+        <style>            
+            #Footer {
+            
+            }
+            
+            #Main-Menu {
+
+            }
+
+            .Menu {
+
+            }
+
+            .Wrapper {
+                
+            }
+        </style>
+
+	</head>
+	<!------------------------------------------------------------------------------------------------------->
+	<body>
+
+		<div id="Main-Menu" class="Menu">
+			<ul>
+                <li><a href="{{ url_for('home') }}">Home</a></li>
+                {% if current_user.is_authenticated %}                
+                    <li><a href="{{ url_for('browse') }}">Generate</a></li>
+                    <li><a href="{{ url_for('account') }}">Login</a></li>
+                    <li><a href="{{ url_for('logging_out') }}">Logout</a></li>
+                {% else %}
+                    <li><a href="{{ url_for('register') }}">About</a></li>
+                    <li><a href="{{ url_for('login') }}">Movies</a></li>
+                {% endif %}
+			</ul>
+        </div>
+        {% if current_user.is_authenticated %}  
+        <div>
+            <ul>
+                {% for Entries in Datapack %}
+                    <li><a href="{{ url_for('portfolio/{{ current_user }}/{{ entry.title }}') }}">{{ entry.title }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+		<div class="Wrapper">
+		{% block body_content  %}
+		{% endblock  %}
+		</div>
+
+		<div id="Footer" class="Menu">
+			<li><a href="{{ url_for('home') }}">Home</a></li>
+            {% if current_user.is_authenticated %}                
+                <li><a href="{{ url_for('browse') }}">Generate</a></li>
+                <li><a href="{{ url_for('account') }}">Login</a></li>
+                <li><a href="{{ url_for('logging_out') }}">Logout</a></li>
+            {% else %}
+                <li><a href="{{ url_for('register') }}">About</a></li>
+                <li><a href="{{ url_for('login') }}">Movies</a></li>
+            {% endif %}
+			<h3>Crosswave<span>By Sean David McCann</span></h3>
+		</div>
+
+	</body>
+	<!------------------------------------------------------------------------------------------------------->
+</html>
