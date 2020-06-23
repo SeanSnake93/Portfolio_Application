@@ -35,7 +35,7 @@ The goal of this application is to make a functioning site capable of filtering 
 
 ## Planning
 ### Trello Board - Initial
-![trello](https://user-images.githubusercontent.com/64256460/85457908-6e652400-b598-11ea-888b-5045238a05cc.png)
+![image](https://user-images.githubusercontent.com/64256460/85458270-d61b6f00-b598-11ea-92a4-72e3ba2af0e8.png)
 
 
 
