@@ -1,1 +1,0 @@
-This Service is to be used for handeling requests made by a user
